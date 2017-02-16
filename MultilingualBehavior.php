@@ -100,7 +100,7 @@ class MultilingualBehavior extends CActiveRecordBehavior
      *
      * @var string
      */
-    public $defaultLanguage;
+    public $defaultLanguage = 'en';
 
     /**
      * The scenario corresponding to the creation of the model.
@@ -255,6 +255,10 @@ class MultilingualBehavior extends CActiveRecordBehavior
             $this->createLocalizedModel();
         }
 
+        if (!isset($this->languages)) {
+            $this->languages = Yii::app()->params->languages;
+        }
+
         if (array_values($this->languages) !== $this->languages) { // associative array
             $this->languages = array_keys($this->languages);
         }
@@ -329,7 +333,7 @@ class MultilingualBehavior extends CActiveRecordBehavior
 
             public function tableName()
             {
-                return '{{{$this->localizedTableName}}}';
+                return '{$this->localizedTableName}';
             }
 
             public function relations()
