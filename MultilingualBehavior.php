@@ -400,8 +400,8 @@ class MultilingualBehavior extends CActiveRecordBehavior
         return [
             'with' => [
                 $this->internationalizedRelationName => [],
-            ),
-        );
+            ],
+        ];
     }
 
     /**
