@@ -46,14 +46,14 @@ Requirements
 
 ```sql
 CREATE TABLE IF NOT EXISTS `post_localized` (
-`localized_id` int(11) NOT NULL AUTO_INCREMENT,
+`id` int(11) NOT NULL AUTO_INCREMENT,
 `post_id` int(11) NOT NULL,
-`localization_id` varchar(6) NOT NULL,
+`language` varchar(6) NOT NULL,
 `localized_title` varchar(255) NOT NULL,
 `localized_content` TEXT NOT NULL,
-PRIMARY KEY (`localized_id`),
+PRIMARY KEY (`id`),
 KEY `post_id` (`post_id`),
-KEY `localization_id` (`localization_id`)
+KEY `language` (`language`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 ALTER TABLE `post_localized`
@@ -75,7 +75,7 @@ public function behaviors() {
             // 'localizedModelName'            => 'PostLocalized',
             // 'localizedTableName'            => 'postLocalized',
             // 'localizedForeignKey'           => 'post_id',
-            // 'localizationField'             => 'localization_id',
+            // 'languageField'                 => 'language',
             // attributes of the model to be translated
             'localizedAttributes'              => ['title', 'content'],
             // 'localizedPrefix'               => 'localized_',

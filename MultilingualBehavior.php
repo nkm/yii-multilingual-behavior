@@ -55,11 +55,11 @@ class MultilingualBehavior extends CActiveRecordBehavior
     public $localizedForeignKey;
 
     /**
-     * The name of the localization field on the translation table.
+     * The name of the language on the translation table.
      *
      * @var string
      */
-    public $localizationField = 'localization_id';
+    public $languageField = 'language';
 
     /**
      * The attributes of the base model to be translated.
@@ -76,7 +76,7 @@ class MultilingualBehavior extends CActiveRecordBehavior
      *
      * In the translation table, the columns corresponding to the localized
      * attributes have to be named like this: 'localized_[name of the attribute]'
-     * and the id column (primary key) like this : 'localized_id'
+     * and the id column (primary key) like this: 'id'
      *
      * @var string
      */
@@ -213,8 +213,8 @@ class MultilingualBehavior extends CActiveRecordBehavior
             $this->localizedModelName,
             $this->localizedForeignKey,
             [
-                'on'    => $this->localizedRelationName.'.'.$this->localizationField."='".$lang."'",
-                'index' => $this->localizationField,
+                'on'    => $this->localizedRelationName.'.'.$this->languageField."='".$lang."'",
+                'index' => $this->languageField,
             ]
         );
     }
@@ -267,7 +267,7 @@ class MultilingualBehavior extends CActiveRecordBehavior
             $this->internationalizedRelationName,
             $this->localizedModelName,
             $this->localizedForeignKey,
-            ['index' => $this->localizationField]
+            ['index' => $this->languageField]
         );
 
         $rules = $owner->rules();
@@ -419,7 +419,9 @@ class MultilingualBehavior extends CActiveRecordBehavior
      * @return string the attribute value
      */
     public function getLangAttribute($name) {
-        return $this->hasLangAttribute($name) ? $this->langAttributes[$name] : null;
+        return $this->hasLangAttribute($name)
+             ? $this->langAttributes[$name]
+             : null;
     }
 
     /**
@@ -529,7 +531,7 @@ class MultilingualBehavior extends CActiveRecordBehavior
             $c = new CDbCriteria();
             $c->condition = "{$this->localizedForeignKey}=:id";
             $c->params    = ['id' => $ownerPk];
-            $c->index     = $this->localizationField;
+            $c->index     = $this->languageField;
 
             $rs = $model->findAll($c);
         }
@@ -539,22 +541,20 @@ class MultilingualBehavior extends CActiveRecordBehavior
 
             if (!isset($rs[$lang])) {
                 $owner = new $this->localizedModelName;
-                $owner->{$this->localizationField} = $lang;
+                $owner->{$this->languageField} = $lang;
                 $owner->{$this->localizedForeignKey} = $ownerPk;
             } else {
                 $owner = $rs[$lang];
             }
 
             foreach ($this->localizedAttributes as $field) {
-                if ($defaultLanguage) {
-                    $value = $mainOwner->$field;
-                } else {
-                    $value = $this->getLangAttribute($field.'_'.$lang);
-                }
+                $value = $defaultLanguage
+                       ? $mainOwner->$field
+                       : $this->getLangAttribute($field.'_'.$lang);
 
                 if ($value !== null) {
-                    $localizationField = $this->localizedPrefix.$field;
-                    $owner->$localizationField = $value;
+                    $localizedField = $this->localizedPrefix.$field;
+                    $owner->$localizedField = $value;
                 }
             }
 
