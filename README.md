@@ -12,8 +12,7 @@ in the model as normal attributes.
 
 
 ```php
-// Assuming current language is english (in protected/config/main.php:
-'sourceLanguage' => 'en')
+// Assuming current language is english (in protected/config/main.php: 'sourceLanguage' => 'en')
 $model = Post::model()->findByPk((int) $id);
 echo $model->title; // echo "English title"
  
